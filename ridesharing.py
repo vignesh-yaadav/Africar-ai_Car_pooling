@@ -1,6 +1,3 @@
-import datetime
-import json
-
 import matplotlib.pyplot as plt
 import mysql.connector
 import numpy as np
@@ -137,12 +134,12 @@ def kmeanscluster(starttime , endtime):
         return
     kvalue = getkvalue(recordcount)
     meanpoints, labels = kmeanscluster(coord_list)
-    # plotkmeanscluster(coord_list,labels)
+    plotkmeanscluster(coord_list,labels)
 
     clusterpt = getclusterpoints(coord_list, labels, kvalue)
-    # printclusterpoints(clusterpt, kvalue)
+    printclusterpoints(clusterpt, kvalue)
     carassign, carcount = carassignment(clusterpt, kvalue)
-    # printridesshared(carassign, carcount)
+    printridesshared(carassign, carcount)
 
     cnn.commit()
     cursor.close()
@@ -183,83 +180,4 @@ def kmeanscluster(starttime , endtime):
         tnormaldist = tnormaldist + normaldistance # Sum up all the trip distances
         print("\nDistance without ride sharing:",normaldistance,"km")
         return normaldistance
-
-    # To get the total travel distance After ridesharing
-    def getwithridesharingdistance(carassign,carcount):
-        # Initialize some global and local variables
-        global tridesharedist
-        global wlength
-        wlength = wlength + len(carassign)
-        ridesharedist = 0
-        # Calculate  distance travelled by trips after ridesharing
-        # For that, I took JFK as source and First destination point as destinaation
-        # After first passenger dropped off, Keeping Previous Destination point as source and current destination
-        # point as destination and repeat the process till all the passengers for a trip dropped off.
-        for i in range(0,carcount):
-            initlat = 40.645574
-            initlog = -73.784866
-            for j in range (0,len(carassign[i])):
-                if(j!=0):
-                    initlat = carassign[i][j-1][1]
-                    initlog = carassign[i][j-1][0]
-                distance = getDistance(initlat, initlog, carassign[i][j][1], carassign[i][j][0])
-                ridesharedist = ridesharedist + distance[0]
-
-        ridesharedist = ridesharedist/1000
-        tridesharedist = tridesharedist + ridesharedist # Sum up all the trip distances
-        print("Distance with ride sharing:",ridesharedist,"km")
-        return ridesharedist
-
-    # This function returns the distance saved in percentage
-    def getsaveddistance(normaldistance,ridesharedist):
-        global totaldistance
-        distancesaved = (1-(ridesharedist/normaldistance))*100
-        totaldistance = totaldistance + distancesaved
-
-    normaldistance = getwithoutridesharingdistance(coord_list)
-    ridesharedist = getwithridesharingdistance(carassign, carcount)
-    getsaveddistance(normaldistance, ridesharedist)
-    numpool = numpool + 1 # To calculate the total number of pools
-
-
-# Initializing some global variables
-
-starttime = Timeframe.starttime
-endtime = Timeframe.endtime
-numpool = 0
-totaldistance = 0
-tnormaldist = 0
-tridesharedist = 0
-wolength = 0
-wlength = 0
-
-programstarttime = datetime.datetime.now() # Record the system time before start of the Algorithm
-print("\nAlgorithm start time:",programstarttime)
-
-# Run the Algorithm for each pool window until the end time.
-
-while endtime <= Timeframe.untildatetime:
-    print("\npool : ",starttime, "-",endtime)
-    kmeanscluster(starttime,endtime)
-    starttime = starttime + Timeframe.windowsize
-    endtime = endtime + Timeframe.windowsize
-
-programendtime = datetime.datetime.now() # Record the system time After end of the Algorithm
-print("\nAlgorithm End time:",programendtime)
-
-# Calculate the difference between start and the end time
-timeobj = programendtime - programstarttime
-
-print ("Total time to run the Algorithm:", timeobj)
-print("Average run time for each pool:",timeobj/numpool)
-
-print ("\nTotal distance without ridesharing:",tnormaldist,"km")
-print ("Total distance with ridesharing:",tridesharedist,"km")
-
-print("\nNumber of pools:",numpool)
-
-print ("\nAverage distance without ridesharing for eachpool:",tnormaldist/numpool,"km")
-print ("Average distance with ridesharing for each pool",tridesharedist/numpool,"km")
-
-print ("\nAverage number of trips Before RideSharing:",wolength/numpool)
-print ("Average number of trips After RideSharing:",wlength/numpool)
+    
