@@ -3,10 +3,13 @@
 ### Project status
 
 - [X] Distance without ride share calculate
-- [x] Mockups
-- [x] Development
+- [x] Total distance travelled after ride sharing
+- [x] Distance saved in percenage
 - [x] Unit testing
-- [ ] QA
+- [ ] SQL Setup
 - [ ] Stage
 - [ ] Beta Testing
 - [ ] Production
+- [ ] Server Setup
+- [ ] Test for custom data
+- [ ] Test lagose data
