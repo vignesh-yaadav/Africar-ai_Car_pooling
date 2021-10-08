@@ -6,6 +6,7 @@
 - [x] Total distance travelled after ride sharing
 - [x] Distance saved in percenage
 - [x] Unit testing
+- [ ] Data Augmentation (In Progress)
 - [ ] SQL Setup
 - [ ] Stage
 - [ ] Beta Testing
